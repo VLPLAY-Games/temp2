@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/VLPLAY-Games/temp/static/css/main.0837674e.css",
+    "main.js": "/VLPLAY-Games/temp/static/js/main.7345dafd.js",
+    "index.html": "/VLPLAY-Games/temp/index.html",
+    "main.0837674e.css.map": "/VLPLAY-Games/temp/static/css/main.0837674e.css.map",
+    "main.7345dafd.js.map": "/VLPLAY-Games/temp/static/js/main.7345dafd.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.0837674e.css",
+    "static/js/main.7345dafd.js"
+  ]
+}
