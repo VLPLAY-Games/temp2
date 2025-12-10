@@ -1,15 +1,83 @@
 <!DOCTYPE html>
 <html lang="ru">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta name="description" content="Простой React кликер" />
-    <title>Кликер-игра</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <title>Галерея изображений - API тест</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    section { margin-bottom: 30px; }
+    input, button { margin: 5px; padding: 10px; }
+    img { max-width: 200px; margin: 10px; border: 1px solid #ccc; }
+  </style>
+</head>
+<body>
+  <h1>🖼️ Галерея изображений API</h1>
+
+  <section>
+    <h2>1. Получить все изображения</h2>
+    <button onclick="getImages()">Загрузить список</button>
+    <div id="imageList"></div>
+  </section>
+
+  <section>
+    <h2>2. Загрузить новое изображение</h2>
+    <input type="text" id="title" placeholder="Название изображения">
+    <input type="file" id="fileInput" accept="image/*">
+    <button onclick="uploadImage()">Загрузить</button>
+    <p id="uploadStatus"></p>
+  </section>
+
+  <section>
+    <h2>3. Удалить изображение</h2>
+    <input type="number" id="deleteId" placeholder="ID изображения">
+    <button onclick="deleteImage()">Удалить</button>
+    <p id="deleteStatus"></p>
+  </section>
+
+  <script>
+    const API_URL = 'http://localhost:3000/api/images';
+
+    async function getImages() {
+      const res = await fetch(API_URL);
+      const data = await res.json();
+      const container = document.getElementById('imageList');
+      container.innerHTML = '';
+      data.data.forEach(img => {
+        const div = document.createElement('div');
+        div.innerHTML = `
+          <strong>${img.id}: ${img.title}</strong><br>
+          <img src="/uploads/${img.filename}" alt="${img.title}">
+          <hr>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    async function uploadImage() {
+      const fileInput = document.getElementById('fileInput');
+      const title = document.getElementById('title').value;
+      const formData = new FormData();
+      formData.append('image', fileInput.files[0]);
+      formData.append('title', title);
+
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        body: formData
+      });
+      const result = await res.json();
+      document.getElementById('uploadStatus').innerText = 
+        result.success ? '✅ Загружено!' : '❌ Ошибка: ' + result.message;
+      if (result.success) getImages();
+    }
+
+    async function deleteImage() {
+      const id = document.getElementById('deleteId').value;
+      const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+      const result = await res.json();
+      document.getElementById('deleteStatus').innerText = 
+        result.success ? '✅ Удалено!' : '❌ Ошибка: ' + result.message;
+      if (result.success) getImages();
+    }
+  </script>
+</body>
 </html>
